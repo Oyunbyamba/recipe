@@ -1,4 +1,6 @@
 import Search from "./model/search";
+import { elements } from "./view/base";
+import * as searchView from "./view/searchView";
 
 /**
  * Web app төлөв / state /
@@ -11,20 +13,23 @@ import Search from "./model/search";
 const state = {};
 const controlSearch = async () => {
   // 1. Вэбээс хайлтын түлхүүр үгийг гаргаж авна. /Хайлт хийсэн утга авна - "pizza" гм/
-  const query = "pizza";
+  const query = searchView.getInput();
 
   if (query) {
     // 2. Түлхүүр үгээр хайдаг Search()-обьектыг үүсгэж өгнө. /Шинээр хайлтын обьектыг үүсгэнэ/
     state.search = new Search(query);
 
-    // 3. Хайлт хийхэд зориулж дэлгэцийг бэлтгэнэ /UI/. /Хайлтын үр дүнг харуулах хэсгийг цэвэрлэж бэлтгэнэ/
-    // 4. Хайлтыг гүйцэтгэнэ.
+    // 3. Хайлтыг гүйцэтгэнэ.
     await state.search.doSearch();
+    // 4. Хайлт хийхэд зориулж дэлгэцийг бэлтгэнэ /UI/. /Хайлтын үр дүнг харуулах хэсгийг цэвэрлэж бэлтгэнэ/
+    searchView.clearSearchResult();
+    searchView.clearSearchQuery();
     // 5. Хайлтын үр дүнг дэлгэцэнд үзүүлнэ.
-    console.log(state.search.result);
+    if (state.search.result === undefined) alert("Хайлтаар илэрцгүй ...");
+    else searchView.renderRecipes(state.search.result);
   }
 };
-document.querySelector(".search").addEventListener("submit", e => {
+elements.searchForm.addEventListener("submit", e => {
   e.preventDefault(); // Submit автоматаар хийгдэх үйлдлийг болиулна. /Пост хийгдэхгүй/
   controlSearch();
 });
