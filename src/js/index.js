@@ -36,3 +36,19 @@ elements.searchForm.addEventListener("submit", (e) => {
   e.preventDefault(); // Submit автоматаар хийгдэх үйлдлийг болиулна. /Пост хийгдэхгүй/
   controlSearch();
 });
+// Хуудаслалт харуулдаг товч дээр листенер тавих
+// Гаднах div - дээр листенер тавингаа дотор нь байгаа 2 товчны алинд нь илүү ойрхон дарсан
+// гэдгийг олж болдог /closest(".className")/
+
+elements.pageButtons.addEventListener("click", (e) => {
+  const btn = e.target.closest(".btn-inline");
+  if (btn) {
+    // Өөр хуудас руу шилжихдээ үзүүлж байсан үр дүнгээ устгана
+    searchView.clearSearchResult();
+    // Ямар хуудас руу шилжих гэж байгаагаа барьж авна
+    // HTML-доторх "data-goto1=2"-д хандахдаа "dataset.A" - гэж хандана. /dataset.goto1 ==> "2"/
+    const gotoPageNumber = parseInt(btn.dataset.goto, 10);
+    // Үр дүнг дэлгэцэнд үзүүлнэ
+    searchView.renderRecipes(state.search.result, gotoPageNumber);
+  }
+});

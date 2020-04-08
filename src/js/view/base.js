@@ -3,10 +3,12 @@ export const elements = {
   searchInput: document.querySelector(".search__field"),
   searchResultDev: document.querySelector(".results"),
   searchResultList: document.querySelector(".results__list"),
+  pageButtons: document.querySelector(".results__pages"),
 };
 export const elementStrings = {
   loader: "loader",
 };
+// Түр хүлээх дүрсийг харуулах функц
 export const renderLoader = (parent) => {
   const loader = `
     <div class="${elementStrings.loader}">
@@ -17,6 +19,7 @@ export const renderLoader = (parent) => {
   `;
   parent.insertAdjacentHTML("afterbegin", loader);
 };
+// Түр хүлээх дүрсийг алга болгох функц
 export const clearLoader = () => {
   const loader = document.querySelector(`.${elementStrings.loader}`);
   if (loader) loader.parentElement.removeChild(loader);
