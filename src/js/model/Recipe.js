@@ -28,6 +28,6 @@ export default class Recipe {
     this.time = this.ingredients.length * 5;
   }
   calcHuniiToo() {
-    this.huniiToo = 4;
+    this.huniiToo = 5;
   }
 }

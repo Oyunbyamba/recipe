@@ -2,6 +2,7 @@ import Search from "./model/search";
 import { elements, renderLoader, clearLoader } from "./view/base";
 import * as searchView from "./view/searchView";
 import Recipe from "./model/Recipe";
+import { renderRecipe, clearRecipe } from "./view/recipeView";
 
 /**
  * Web app төлөв / state /
@@ -27,6 +28,7 @@ const controlSearch = async () => {
     state.search = new Search(query);
 
     // 3. Хайлтыг гүйцэтгэнэ.
+    // Хайлт хийж байхад хүлээх дүрс гаргах
     renderLoader(elements.searchResultDev);
     await state.search.doSearch();
     // 4. Хайлт хийхэд зориулж дэлгэцийг бэлтгэнэ /UI/. /Хайлтын үр дүнг харуулах хэсгийг цэвэрлэж бэлтгэнэ/
@@ -73,15 +75,23 @@ const controlRecipe = async () => {
   // Жорын моделийг үүсгээд App-ны state = {} руу хийж өгнө. Ингэснээр state-ээс бүх модел руу хандана
   state.recipe = new Recipe(id);
   // 3. UI дэлгэцийг бэлтгэнэ /Жор байрлуулах, өмнө гарсан жорыг устгах/
+  // Хайлтаар гарч ирсэн жорын мэдээллийг устгана
+  clearRecipe();
+  // Хайж байхад хүлээх дүрсийг харуулна
+  renderLoader(elements.recipeDiv);
 
   // 4. Жороо татаж авчирна
   await state.recipe.getRecipe();
+  // Хүлээхийг сануулсан эргэлддэг дүрсийг алга богоно
+  clearLoader();
   // 5. Жорыг гүйцэтгэх хугацаа, орцыг тооцоолно
   state.recipe.calcTime();
   state.recipe.calcHuniiToo();
   // 6. Жороо дэлгэцэнд гаргана
-  console.log(state.recipe);
+  renderRecipe(state.recipe);
 };
 // URL-дахь #-ны ард байгаа ID өөрчлөгдөхөд hash өөрчлөгдөнө.
 // Энэ өөрчлөгдсөн hash-ыг барьж авах эвентлистенер
 window.addEventListener("hashchange", controlRecipe);
+// refrish - хийхэд тухайн hash - хэвээрээ байх
+window.addEventListener("load", controlRecipe);
