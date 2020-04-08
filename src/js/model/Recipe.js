@@ -22,4 +22,12 @@ export default class Recipe {
     this.publisher_url = result.data.recipe.publisher_url;
     this.title = result.data.recipe.title;
   }
+  // Жорын гүйцэтгэх хугацаа, орцыг тооцоолох функц
+  calcTime() {
+    // 1 найрлага дээр 5 мин зарцуулна гэж тооцоольё
+    this.time = this.ingredients.length * 5;
+  }
+  calcHuniiToo() {
+    this.huniiToo = 4;
+  }
 }

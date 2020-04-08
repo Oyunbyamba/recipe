@@ -11,13 +11,19 @@ import Recipe from "./model/Recipe";
  * - Лайкалсан жоруудын жагсаалт
  * - Захиалж байгаа жорын найрлагууд
  */
+// Моделийг үүсгээд state = {} руу хийж өгнө. Ингэснээр state-ээс бүх модел руу хандах болмжтой болно
 const state = {};
+/**
+ * ХАЙЛТЫН КОНТРОЛЛЕР - controlSearch();
+ * Model, View 2-ыг хооронд нь холбогч / Model ==> Controller <== View /
+ */
 const controlSearch = async () => {
   // 1. Вэбээс хайлтын түлхүүр үгийг гаргаж авна. /Хайлт хийсэн утга авна - "pizza" гм/
   const query = searchView.getInput();
 
   if (query) {
     // 2. Түлхүүр үгээр хайдаг Search()-обьектыг үүсгэж өгнө. /Шинээр хайлтын обьектыг үүсгэнэ/
+    // Моделийг үүсгээд App-ны state = {} руу хийж өгнө. Ингэснээр state-ээс бүх модел руу хандана
     state.search = new Search(query);
 
     // 3. Хайлтыг гүйцэтгэнэ.
@@ -54,5 +60,28 @@ elements.pageButtons.addEventListener("click", (e) => {
   }
 });
 
-const r = new Recipe(47746);
-r.getRecipe();
+/**
+ * ЖОРЫН КОНТРОЛЛЕР - controlRecipe();
+ */
+
+const controlRecipe = async () => {
+  // 1. URL-аас ID-г салгаж авна
+  // #id -хэсгийг URL-аас салгаж авнаад #-тэмдгийг устгана
+  const id = window.location.hash.replace("#", "");
+
+  // 2. Жорын моделийг үүсгэж өгнө
+  // Жорын моделийг үүсгээд App-ны state = {} руу хийж өгнө. Ингэснээр state-ээс бүх модел руу хандана
+  state.recipe = new Recipe(id);
+  // 3. UI дэлгэцийг бэлтгэнэ /Жор байрлуулах, өмнө гарсан жорыг устгах/
+
+  // 4. Жороо татаж авчирна
+  await state.recipe.getRecipe();
+  // 5. Жорыг гүйцэтгэх хугацаа, орцыг тооцоолно
+  state.recipe.calcTime();
+  state.recipe.calcHuniiToo();
+  // 6. Жороо дэлгэцэнд гаргана
+  console.log(state.recipe);
+};
+// URL-дахь #-ны ард байгаа ID өөрчлөгдөхөд hash өөрчлөгдөнө.
+// Энэ өөрчлөгдсөн hash-ыг барьж авах эвентлистенер
+window.addEventListener("hashchange", controlRecipe);
