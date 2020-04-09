@@ -2,7 +2,11 @@ import Search from "./model/search";
 import { elements, renderLoader, clearLoader } from "./view/base";
 import * as searchView from "./view/searchView";
 import Recipe from "./model/Recipe";
-import { renderRecipe, clearRecipe } from "./view/recipeView";
+import {
+  renderRecipe,
+  clearRecipe,
+  highlightSelectedRecipe,
+} from "./view/recipeView";
 
 /**
  * Web app төлөв / state /
@@ -79,6 +83,8 @@ const controlRecipe = async () => {
   clearRecipe();
   // Хайж байхад хүлээх дүрсийг харуулна
   renderLoader(elements.recipeDiv);
+  // Хайлтын үр дүнгээс сонгогдсон жорыг тэмдэглэж харуулах
+  highlightSelectedRecipe(id);
 
   // 4. Жороо татаж авчирна
   await state.recipe.getRecipe();

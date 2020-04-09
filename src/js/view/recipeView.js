@@ -13,6 +13,19 @@ const renderNairlaga = (orts) => `
     </li>
 `;
 
+// Хайлтын үр дүнгээс идэвхитэй байгаа жорыг тодруулж харуулах
+// HTML -ын а-тагны класс руу 'results__link--active' - гэсэн класс нэмнэ
+export const highlightSelectedRecipe = (id) => {
+  // Хайлтын үр дүнг класс-аар нь хайлт хийж шүүж авах
+  const arr = Array.from(document.querySelectorAll(".results__link"));
+  // arr-ийн элементүүдээр давталт хийж, идэвхитэй элементыг тэмдэглэсэн классын нэрийг устгах
+  arr.forEach((el) => el.classList.remove("results__link--active"));
+  // "a" -тагны href-атрибут нь "#id" - байх элементийг шүүж авах
+  const domOb = document.querySelector(`a[href*="${id}"]`);
+  // domOb != null /domOb === true/ бол класс лист руу нь класс нэмэх
+  if (domOb) domOb.classList.add("results__link--active");
+};
+
 export const clearRecipe = () => {
   // Одоо дэлгэц дээр харагдаж байгаа жорыг арилгана
   elements.recipeDiv.innerHTML = "";
