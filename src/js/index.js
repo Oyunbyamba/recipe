@@ -5,6 +5,7 @@ import Recipe from "./model/Recipe";
 import List from "./model/List";
 import Like from "./model/Like";
 import * as listView from "./view/listView";
+import * as likesView from "./view/likesView";
 import {
   renderRecipe,
   clearRecipe,
@@ -21,6 +22,8 @@ import {
  */
 // Моделийг үүсгээд state = {} руу хийж өгнө. Ингэснээр state-ээс бүх модел руу хандах болмжтой болно
 const state = {};
+// Лайк цэсийг хаах /Жор лайклагдаагүй үед харагдахгүй байх/
+likesView.toggleLikeMenu(0);
 /**
  * ХАЙЛТЫН КОНТРОЛЛЕР - controlSearch();
  * Model, View 2-ыг хооронд нь холбогч / Model ==> Controller <== View /
@@ -75,8 +78,10 @@ elements.pageButtons.addEventListener("click", (e) => {
 
 const controlRecipe = async () => {
   // 1. URL-аас ID-г салгаж авна
-  // #id -хэсгийг URL-аас салгаж авнаад #-тэмдгийг устгана
+  // #id -хэсгийг URL-аас салгаж аваад #-тэмдгийг устгана
   const id = window.location.hash.replace("#", "");
+  // if - Хэрэв Лайк-массив хоосон бол /state.likes === false/ шинээр үүсгэнэ гэж шалгана
+  if (!state.likes) state.likes = new Like();
   // URL дээр id-байгаа эсэхийг шалгана /"id === true"/. Байвал эргэлддэг дүрс гаргана.
   if (id) {
     // 2. Жорын моделийг үүсгэж өгнө
@@ -98,7 +103,7 @@ const controlRecipe = async () => {
     state.recipe.calcTime();
     state.recipe.calcHuniiToo();
     // 6. Жороо дэлгэцэнд гаргана
-    renderRecipe(state.recipe);
+    renderRecipe(state.recipe, state.likes.isLiked(id));
   }
 };
 // URL-дахь #-ны ард байгаа ID өөрчлөгдөхөд hash өөрчлөгдөнө.
@@ -144,17 +149,27 @@ const controlLike = () => {
   if (state.likes.isLiked(currentRecipeId)) {
     // 4. Лайкалсан бол лайкийг нь болиулна
     state.likes.deleteLike(currentRecipeId);
-    console.log(state.likes);
+    // Лайкын цэснээс жорыг устгана
+    likesView.deleteLike(currentRecipeId);
+    // Лайклагдаагүй - гэсэн товчийг харуулна
+    likesView.toggleLikeButton(false);
   } else {
     // 5. Лайклаагүй бол лайклана
-    state.likes.addLike(
+    const newLike = state.likes.addLike(
       currentRecipeId,
       state.recipe.title,
       state.recipe.publisher,
       state.recipe.image_url
     );
-    console.log(state.likes);
+
+    // Лайк цэсэнд энэ лайкыг оруулах
+    // newLike-аар орж ирсэн үр дүнг render-лэнэ /HTML кодны харгалзах хэсэгт байрлуулна/
+    likesView.renderLike(newLike);
+    // Лайклагдсан гэсэн товчыг харуулна
+    likesView.toggleLikeButton(true);
   }
+  // Лайк менюг ил гаргана. / 1-ээс олон жор лайклагдсан бол меню ил гарч ирнэ/
+  likesView.toggleLikeMenu(state.likes.getNumberOfLikes());
 };
 
 // "САГСАНД ХИЙХ"-товч дээр болон Like- товч дээр листенер тавих

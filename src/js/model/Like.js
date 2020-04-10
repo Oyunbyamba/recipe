@@ -6,9 +6,9 @@ export default class Likes {
     this.likes = [];
   }
   // Лайкалсан жорын өгөгдлийг авч, лайк-массивд хийх функц
-  addLike(id, title, publisher, image_url) {
+  addLike(id, title, publisher, img) {
     // Лайкалсан жорын өгөгдөл
-    const like = { id, title, publisher, image_url };
+    const like = { id, title, publisher, img };
     // өгөгдлийг likes-массивд хийх
     this.likes.push(like);
     // Лайкалсан жорын өгөгдлийг буцаах
