@@ -116,15 +116,16 @@ window.addEventListener("load", controlRecipe);
 const controlList = () => {
   // 1. Найрлагны модел үүсгэнэ
   state.list = new List();
+
   // Өмнө харагдаж байсан найрлагны лист устгах
   listView.clearItems();
 
   // 2. Уг модел руу одоо харагдаж байгаа жорны бүх найрлагыг авч хийнэ
   state.recipe.ingredients.forEach((n) => {
     // Орж ирсэн жорыг Лист-руу хийнэ /Найрлагыг модел руу хийнэ/
-    state.list.addItem(n);
+    const item = state.list.addItem(n);
     // Орж ирсэн жорыг HTML кодны дагуу дэлгэцэнд гаргана
-    listView.renderItem(n);
+    listView.renderItem(item);
   });
 };
 
@@ -136,4 +137,21 @@ elements.recipeDiv.addEventListener("click", (e) => {
   if (e.target.matches(".recipe__btn, .recipe__btn *")) {
     controlList();
   }
+});
+
+// "МИНИЙ САГС" -хэсэгт литенер тавих
+elements.shoppingList.addEventListener("click", (e) => {
+  //а. Click хийгдсэн li-элементийн "data-itemid" атрибутын утгыг шүүж авна /ID-г нь авна/
+  //б. Авсан ID-ээр нь дуудаж моделоос устгана.
+  //в. Дэлгэц дээрээс тухайн ID-тай орцыг устгана
+
+  // а1. target /shopping__item/-д х.ойрхон click хийгдсэн элементийг сонгож авах /closest-ашиглана/
+  const obj = e.target.closest(".shopping__item");
+  // а2. obj-таг доторх data-д заасан утгыг авах
+  const id = obj.dataset.itemid; // data-itemid="asdf" ==> "asdf"
+  // б. Олдсон ID-тэй орцыг моделоос утгана.
+  state.list.deleteItem(id);
+
+  // в. Дэлгэцээс тухайн ID-тай орцыг устгах
+  listView.deleteItem(id);
 });
