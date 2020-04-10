@@ -3,6 +3,7 @@ import { elements, renderLoader, clearLoader } from "./view/base";
 import * as searchView from "./view/searchView";
 import Recipe from "./model/Recipe";
 import List from "./model/List";
+import Like from "./model/Like";
 import * as listView from "./view/listView";
 import {
   renderRecipe,
@@ -128,14 +129,44 @@ const controlList = () => {
     listView.renderItem(item);
   });
 };
+/**
+ * LIKE - Контроллер
+ */
+// Like дарагдсан жорыг авч модел руу хийх
+const controlLike = () => {
+  // 1. Лайкийн моделийг үүсгэнэ.
+  // if - Хэрэв Лайк-массив хоосон бол /state.likes === false/ шинээр үүсгэнэ гэж шалгана
+  if (!state.likes) state.likes = new Like();
 
-// "САГСАНД ХИЙХ"-товч дээр листенер тавих
+  // 2. Одоо харагдаж байгаа жорын ID-г олж авах
+  const currentRecipeId = state.recipe.id;
+  // 3. Энэ жорыг лайкалсан эсэхийг шалгах
+  if (state.likes.isLiked(currentRecipeId)) {
+    // 4. Лайкалсан бол лайкийг нь болиулна
+    state.likes.deleteLike(currentRecipeId);
+    console.log(state.likes);
+  } else {
+    // 5. Лайклаагүй бол лайклана
+    state.likes.addLike(
+      currentRecipeId,
+      state.recipe.title,
+      state.recipe.publisher,
+      state.recipe.image_url
+    );
+    console.log(state.likes);
+  }
+};
+
+// "САГСАНД ХИЙХ"-товч дээр болон Like- товч дээр листенер тавих
 elements.recipeDiv.addEventListener("click", (e) => {
   //terget-буюу click хийгдсэн элементийн доторх css-ыг "matches" - функцээр шүүж авна
   // ".recipe__btn" -зөвхөн товч, ".recipe__btn * " - энэ доторх бүх элементийг сонгож авна
   // ".recipe__btn * " - товч доторх зураг, текст сонгогдоно
   if (e.target.matches(".recipe__btn, .recipe__btn *")) {
     controlList();
+  } else if (e.target.matches(".recipe__love, .recipe__love *")) {
+    // Лайк товч дээр дарагдах үед листенер тавих
+    controlLike();
   }
 });
 
