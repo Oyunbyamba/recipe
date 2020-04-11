@@ -22,8 +22,7 @@ import {
  */
 // Моделийг үүсгээд state = {} руу хийж өгнө. Ингэснээр state-ээс бүх модел руу хандах болмжтой болно
 const state = {};
-// Лайк цэсийг хаах /Жор лайклагдаагүй үед харагдахгүй байх/
-likesView.toggleLikeMenu(0);
+
 /**
  * ХАЙЛТЫН КОНТРОЛЛЕР - controlSearch();
  * Model, View 2-ыг хооронд нь холбогч / Model ==> Controller <== View /
@@ -80,8 +79,7 @@ const controlRecipe = async () => {
   // 1. URL-аас ID-г салгаж авна
   // #id -хэсгийг URL-аас салгаж аваад #-тэмдгийг устгана
   const id = window.location.hash.replace("#", "");
-  // if - Хэрэв Лайк-массив хоосон бол /state.likes === false/ шинээр үүсгэнэ гэж шалгана
-  if (!state.likes) state.likes = new Like();
+
   // URL дээр id-байгаа эсэхийг шалгана /"id === true"/. Байвал эргэлддэг дүрс гаргана.
   if (id) {
     // 2. Жорын моделийг үүсгэж өгнө
@@ -108,12 +106,25 @@ const controlRecipe = async () => {
 };
 // URL-дахь #-ны ард байгаа ID өөрчлөгдөхөд hash өөрчлөгдөнө.
 // Энэ өөрчлөгдсөн hash-ыг барьж авах эвентлистенер
-window.addEventListener("hashchange", controlRecipe);
+// window.addEventListener("hashchange", controlRecipe);
 // refrish - хийхэд тухайн hash - хэвээрээ байх
-window.addEventListener("load", controlRecipe);
+// window.addEventListener("load", controlRecipe);
 
 // Дээрх 2 addEventListener-ийг нийлүүлж, хялбар бичих боломж:
-// ['hashchange', 'load'].forEach(e => window.addEventListener(e, controlRecipe));
+["hashchange", "load"].forEach((e) =>
+  window.addEventListener(e, controlRecipe)
+);
+
+// Web app ачаалагдангуут "load"-функц дуудагдана
+window.addEventListener("load", (e) => {
+  // if - Хэрэв Лайк-массив хоосон бол /state.likes === false/ шинээр үүсгэнэ гэж шалгана
+  // new Like() - localStirage дээр likes-ийн data байвал хадгалаад, байхгүй бол шинээр үүсгэнэ
+  if (!state.likes) state.likes = new Like();
+  // Лайк цэсийг гаргах эсэхийг шийдэх /Жор лайкын тоо === 0 үед харагдахгүй байх/
+  likesView.toggleLikeMenu(state.likes.getNumberOfLikes());
+  // localStorage дотор лайкууд байвал тэдгээрийг цэсэнд нэмж харуулна
+  state.likes.likes.forEach((like) => likesView.renderLike(like));
+});
 
 /**
  * НАЙРЛАГНЫ ЖАГСААЛТ УДИРДАХ КОНТРОЛЛЕР - controlList

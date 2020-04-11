@@ -2,8 +2,10 @@
 
 export default class Likes {
   constructor() {
-    // Лайкалсан жорыг хадгалах массив
-    this.likes = [];
+    // localStorage-д хадгалсан зүйл байвал likes массив руу бичнэ.
+    this.readDataFromLocalStorage();
+    // Лайкалсан жорыг хадгалах массив /likes - хоосон байвал хоосон массив үүсгэнэ/
+    if (!this.likes) this.likes = [];
   }
   // Лайкалсан жорын өгөгдлийг авч, лайк-массивд хийх функц
   addLike(id, title, publisher, img) {
@@ -11,6 +13,8 @@ export default class Likes {
     const like = { id, title, publisher, img };
     // өгөгдлийг likes-массивд хийх
     this.likes.push(like);
+    // localStorage-руу хадгална
+    this.saveDataToLocalStorage();
     // Лайкалсан жорын өгөгдлийг буцаах
     return like;
   }
@@ -20,6 +24,8 @@ export default class Likes {
     const index = this.likes.findIndex((el) => el.id === id);
     // Уг индекс дээрх элементийг массиваас устгана
     this.likes.splice(index, 1);
+    // localStorage-руу хадгална
+    this.saveDataToLocalStorage();
   }
   // Жорууд лайклагдсан эсэхийг хянах функц /true-лайклагдаагүй  false-лайклагдсан/
   isLiked(id) {
@@ -31,5 +37,16 @@ export default class Likes {
   // Нийт хэдэн элемент лайклагдсан байгааг олдог функц
   getNumberOfLikes() {
     return this.likes.length;
+  }
+
+  // Броузерын localStorage - руу хадгалдаг функц
+  saveDataToLocalStorage() {
+    // Likes - массивын өгөгдлийг тэмдэгт мөр болгож өгөх ёстой
+    localStorage.setItem("likes", JSON.stringify(this.likes));
+  }
+  //localStorage-д хадгалсан юм байвал түүнийг уншаад лайк-ын массив руу хийх
+  readDataFromLocalStorage() {
+    // localStorage-д string JSON өгөгдөл байгаа, түүнийг буцаагаад JS Object болгоно /parse()/
+    this.likes = JSON.parse(localStorage.getItem("likes"));
   }
 }
